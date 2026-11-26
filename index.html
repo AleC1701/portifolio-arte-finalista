@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Portfólio | Arte-Finalista</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #18181b;
+      --muted: #52525b;
+      --border: #e4e4e7;
+      --accent: #20102e;
+      --tag-bg: #f4f4f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      background-color: #000005;
+    }
+
+    /* CABEÇALHO */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+      background-color: #e4d4ee;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--tag-bg);
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #000005;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 620px;
+      margin-top: 0.4rem;
+      font-size: 0.98rem;
+      color: #000005;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      transition: 0.15s ease;
+    }
+
+    .btn:hover {
+      background: var(--tag-bg);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      background: var(--accent);
+    }
+
+    /* FILTROS DE CATEGORIA */
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* GRADE DE PROJETOS */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding-bottom: 4rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .card.hidden {
+      display: none;
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .card-specs {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* JANELA DE DETALHES (MODAL) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 14px;
+      max-width: 820px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 720px) {
+      .modal {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .modal-image {
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      max-height: 500px;
+      object-fit: contain;
+    }
+
+    .modal-content {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .modal-close {
+      align-self: flex-end;
+      background: var(--tag-bg);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .spec-list {
+      list-style: none;
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .spec-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .spec-list span:first-child {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .modal-desc {
+      margin-top: 1rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media print {
+      .actions, .filters {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+  <header>
+    <div class="container top-bar">
+      <div>
+        <span class="badge">Portfólio Técnico • Arte-Final</span>
+        
+        <h1>Alessandra Moreira</h1>
+       
+        <p class="subtitle">
+          Criação e finalização visual de peças gráficas e estampas, cuidando de hierarquia, equilíbrio de elementos, legibilidade e ajuste da arte para diferentes aplicações.
+        </p>
+      </div>
+
+      <div class="actions">
+        <button class="btn" onclick="window.print()">Salvar PDF</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+  
+    <div class="filters">
+      <button class="filter-btn active" data-filter="todos">Todos os Trabalhos</button>
+      <button class="filter-btn" data-filter="papelaria">Cartões & Papelaria</button>
+      <button class="filter-btn" data-filter="estampas">Estampas & Vestuário</button>
+      <button class="filter-btn" data-filter="promocional">Flyers e Panfletos</button>
+      <button class="filter-btn" data-filter="logomarcas">Logomarcas</button>
+    </div>
+
+    <section class="grid" id="portfolio-grid">
+
+      
+      
+      
+      <article class="card"
+        data-category="estampas"
+        data-title="Estampa Camiseta — The Tortured Poets"
+        data-category-label="Estampas & Vestuário"
+        data-size="28 × 32 cm (Peito Centralizado)"
+        data-color="Vetor 1 cor (Branco) • Alta definição"
+        data-finish="Serigrafia / DTF em malha escura"
+        data-desc="Desenvolvimento de arte vetorial com tipografia curva e brasão central otimizado para alto contraste e nitidez de traços finos em tecido preto.">
+        <div class="card-thumb">
+          <img src="imagens/6.jpg" alt="Estampa Camiseta The Tortured Poets">
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Estampas & Vestuário</span>
+          <h2 class="card-title">Estampa Camiseta — TTPD</h2>
+          <p class="card-specs">Vetor 1 Cor • Serigrafia / DTF</p>
+        </div>
+      </article>
+
+      
+      <article class="card"
+        data-category="estampas"
+        data-title="Aplicação Bucket Hat — Ilustração Chibi"
+        data-category-label="Estampas & Vestuário"
+        data-size="7 × 7 cm (Frente)"
+        data-color="RGB / CMYK • Contorno reforçado"
+        data-finish="Transfer DTF / Bordado"
+        data-desc="Adaptação de ilustração para área reduzida e curva de chapéu bucket hat, garantindo leitura limpa da tipografia curva mesmo em pequena escala.">
+        <div class="card-thumb">
+          <img src="imagens/bts 4.jpg" alt="Estampa Bucket Hat">
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Estampas & Vestuário</span>
+          <h2 class="card-title">Estampa Bucket Hat — J-Hope</h2>
+          <p class="card-specs">7 × 7 cm • Área Reduzida • DTF</p>
+        </div>
+      </article>
+
+      
+      <article class="card"
+        data-category="estampas"
+        data-title="Estampa Camiseta — Louis Tomlinson"
+        data-category-label="Estampas & Vestuário"
+        data-size="30 × 40 cm (Frente)"
+        data-color="Retícula P&B + Detalhe em Vermelho"
+        data-finish="DTF / Silk Digital"
+        data-desc="Tratamento fotográfico em alto contraste com recorte limpo, transição suave na base da imagem e tipografia estilizada.">
+        <div class="card-thumb">
+          <img src="imagens/one 3.jpg" alt="Estampa Camiseta Louis Tomlinson">
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Estampas & Vestuário</span>
+          <h2 class="card-title">Estampa Camiseta — Louis Tomlinson</h2>
+          <p class="card-specs">30 × 40 cm • Tratamento de Imagem</p>
+        </div>
+      </article>
+
+    
+      <article class="card"
+        data-category="promocional"
+        data-title="Flyer Promocional — Personalizados 3D"
+        data-category-label="Flyers e Panfletos"
+        data-size="1080 × 1350 px / A5 Impresso"
+        data-color="CMYK / RGB • 300 DPI"
+        data-finish="Divulgação Digital & Panfleto"
+        data-desc="Diagramação de peça promocional com hierarquia de leitura, grade de produtos recortados, ícones vetoriais e QR Code testado para leitura rápida.">
+        <div class="card-thumb">
+          <img src="imagens/panfleto.jpg" alt="Flyer Promocional Personalizados 3D">
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Flyers e Panfletos</span>
+          <h2 class="card-title">Flyer Promocional — Ilustri 3D</h2>
+          <p class="card-specs">Diagramação • Grid • QR Code</p>
+        </div>
+      </article>
+
+      
+      <article class="card"
+        data-category="logomarcas"
+        data-title="Logomarca — Débora Silva Esteticista"
+        data-category-label="Logomarcas"
+        data-size="Matriz Vetorial Escalável"
+        data-color="Paleta Suave • Versão Positiva e Reduzida"
+        data-finish="Aplicação Digital, Papelaria e Bordado"
+        data-desc="Criação de marca com símbolo botânico minimalista e tipografia equilibrada, estruturada para manter legibilidade em tamanhos reduzidos e diferentes fundos.">
+        <div class="card-thumb">
+          <img src="imagens/logomarca débora 1.jpg" alt="Logomarca Débora Silva Esteticista">
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Logomarcas</span>
+          <h2 class="card-title">Logomarca — Débora Silva</h2>
+          <p class="card-specs">Vetor Escalável • Identidade Visual</p>
+        </div>
+      </article>
+
+      <article class="card"
+        data-category="papelaria"
+        data-title="Cartão de Visita — Nádia Carneiro Studio"
+        data-category-label="Cartões & Papelaria"
+        data-size="90 × 50 mm (com 3 mm de sangria)"
+        data-color="CMYK • 300 DPI • Vetor"
+        data-finish="Couchê Fosco 300g + Verniz Localizado"
+        data-desc="Fechamento de cartão de visita com marcas de corte, margem de segurança e arquivo vetorizado pronto para impressão gráfica.">
+        <div class="card-thumb">
+          <img src="imagens/Cartão-de-Visita-Nadia.jpg" alt="Cartão de Visita Nádia Carneiro Studio">
+        </div>
+        <div class="card-body">
+          <span class="card-tag">Cartões & Papelaria</span>
+          <h2 class="card-title">Cartão de Visita — Nádia Carneiro Studio</h2>
+          <p class="card-specs">90 × 50 mm • CMYK • Sangria 3 mm</p>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <div class="modal-image">
+        <img id="modal-img" src="" alt="">
+      </div>
+      <div class="modal-content">
+        <div>
+          <button class="modal-close" id="modal-close" aria-label="Fechar">✕</button>
+          <span class="card-tag" id="modal-tag"></span>
+          <h2 id="modal-title" style="margin-top: 0.3rem;"></h2>
+          <p class="modal-desc" id="modal-desc"></p>
+
+          <ul class="spec-list">
+            <li><span>Formato / Medida</span><span id="modal-size"></span></li>
+            <li><span>Sistema de Cor</span><span id="modal-color"></span></li>
+            <li><span>Acabamento / Saída</span><span id="modal-finish"></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <footer>
+    
+    Portfólio de Arte-Final • Alessandra Carla • Goiânia - GO
+  </footer>
+
+  
+  <script>
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const filter = button.dataset.filter;
+        cards.forEach(card => {
+          if (filter === 'todos' || card.dataset.category === filter) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementById('modal-close');
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const img = card.querySelector('img');
+        document.getElementById('modal-img').src = img.src;
+        document.getElementById('modal-img').alt = img.alt;
+        document.getElementById('modal-tag').textContent = card.dataset.categoryLabel;
+        document.getElementById('modal-title').textContent = card.dataset.title;
+        document.getElementById('modal-desc').textContent = card.dataset.desc;
+        document.getElementById('modal-size').textContent = card.dataset.size;
+        document.getElementById('modal-color').textContent = card.dataset.color;
+        document.getElementById('modal-finish').textContent = card.dataset.finish;
+        modal.classList.add('open');
+      });
+    });
+
+    modalClose.addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+  </script>
+</body>
+</html>
